@@ -80,6 +80,7 @@
        $z[0] = “MySQL”;
     </p>
     <?php
+     unset($a, $b, $c, $z);
         //AQUI VA MI CÓDIGO PHP
         echo '<h4>Respuesta:</h4>';
         $a = "PHP5";
@@ -92,11 +93,11 @@
         echo "</p>";
         echo "<p>Tipo de \$z: " . gettype($z) . "</p>";
 
-        $b = "5 ";
+        $b = "5a version de PHP";
         echo "<p>Valor de \$b: $b</p>";
         echo "<p>Tipo de \$b: " . gettype($b) . "</p>";
 
-        $c = $b * 10;
+        @$c = $b * 10;
         echo "<p>Valor de \$c: $c</p>";
         echo "<p>Tipo de \$c: " . gettype($c) . "</p>";
 
@@ -104,7 +105,7 @@
         echo "<p>Valor de \$a después de concatenar: $a</p>";
         echo "<p>Tipo de \$a: " . gettype($a) . "</p>";
 
-        $b *= $c;
+        @$b *= $c;
         echo "<p>Valor de \$b después de multiplicar: $b</p>";
         echo "<p>Tipo de \$b: " . gettype($b) . "</p>";
 
@@ -114,21 +115,11 @@
         echo "</p>";
         echo "<p>Tipo de \$z: " . gettype($z) . "</p>";
 
-        unset($a, $b, $c, $z);
     ?>
      <h2>Ejercicio 4</h2>
     <p>Lee y muestra los valores de las variables del ejercicio anterior, pero ahora con la ayuda de
     la matriz $GLOBALS o del modificador global de PHP.</p>
     <?php
-        //AQUI VA MI CÓDIGO PHP
-        echo '<h4>Respuesta:</h4>';
-        $a = "PHP5";
-        $z[] = &$a;
-        $b = "5";
-        $c = $b * 10;
-        $a .= $b;
-        $b *= $c;
-        $z[0] = "MySQL";
 
         // Usar $GLOBALS para acceder a las variables
         echo "<strong>Usando \$GLOBALS para mostrar los valores finales:</strong><br>";
@@ -142,6 +133,7 @@
         unset($a, $b, $c, $z);
     ?>
      <h2>Ejercicio 5</h2>
+
     <p>Dar el valor de las variables $a, $b, $c al final del siguiente script:</p>
     <p>$a = “7 personas”;<br />
        $b = (integer) $a;<br />
