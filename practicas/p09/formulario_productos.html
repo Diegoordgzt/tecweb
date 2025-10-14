@@ -110,7 +110,7 @@
 </head>
 <body>
     <h2>Registro de productos electrónicos</h2>
-    <form id="formularioProductos" onsubmit="return validarFormulario()">
+    <form id="formularioProductos" action="set_producto_v2.php" method="post" onsubmit="return validarFormulario()">
         <fieldset>
             <legend>Información del producto</legend>
 
@@ -195,8 +195,7 @@
             alert("No se ingresó una imagen del producto, se usará una por defecto.");
         }
 
-        alert("✅ Producto validado correctamente.");
-        return true;
+        
     }
     </script>
 </body>
