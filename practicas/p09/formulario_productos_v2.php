@@ -1,77 +1,37 @@
 <?php
-    /** Conexión a la base de datos */
-    @$link = new mysqli('localhost', 'root', 'diegord17', 'marketzone');
+$servername = "localhost";
+$username = "root";
+$password = "diegord17";
+$database = "marketzone";
 
-    /** Comprobar la conexión */
-    if ($link->connect_errno) {
-        die('<p>Falló la conexión: ' . htmlspecialchars($link->connect_error) . '</p>');
-    }
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $database);
 
-    /** Inicializar variables */
-    $id = $nombre = $marca = $modelo = $precio = $unidades = $detalles = $imagen = '';
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
 
-    /** Verificar si se recibió un ID de producto */
-    if (isset($_GET['id'])) {
-        $id = intval($_GET['id']);
-        $sql = "SELECT * FROM productos WHERE id = ?";
-        $stmt = $link->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows > 0) {
-            $producto = $result->fetch_assoc();
-            $nombre = htmlspecialchars($producto['nombre']);
-            $marca = htmlspecialchars($producto['marca']);
-            $modelo = htmlspecialchars($producto['modelo']);
-            $precio = htmlspecialchars($producto['precio']);
-            $unidades = htmlspecialchars($producto['unidades']);
-            $detalles = htmlspecialchars($producto['detalles']);
-            $imagen = htmlspecialchars($producto['imagen']);
-        } else {
-            die('<p>Producto no encontrado...</p>');
-        }
-        $stmt->close();
-    } else {
-        die('<p>No se recibió un ID de producto...</p>');
-    }
-
-    /** Procesar formulario de actualización */
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nombre = $_POST['nombre'];
-        $marca = $_POST['marca'];
-        $modelo = $_POST['modelo'];
-        $precio = $_POST['precio'];
-        $unidades = $_POST['unidades'];
-        $detalles = $_POST['detalles'];
-
-        if (!empty($_FILES['imagen']['name'])) {
-            $imagen = 'imagenes/' . basename($_FILES['imagen']['name']);
-            move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen);
-        }
-
-        $sql = "UPDATE productos SET nombre=?, marca=?, modelo=?, precio=?, unidades=?, detalles=?, imagen=? WHERE id=?";
-        $stmt = $link->prepare($sql);
-        $stmt->bind_param("ssssissi", $nombre, $marca, $modelo, $precio, $unidades, $detalles, $imagen, $id);
-
-        if ($stmt->execute()) {
-            echo "<script>alert('Producto actualizado correctamente.'); window.location.href='get_productos_vigentes_v2.php?tope=10';</script>";
-        } else {
-            echo "<p>Error al actualizar el producto.</p>";
-        }
-
-        $stmt->close();
-    }
-    $link->close();
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$producto = [];
+if ($id > 0) {
+    $stmt = $conn->prepare("SELECT * FROM productos WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $producto = $result->fetch_assoc();
+    $stmt->close();
+}
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modificar Producto</title>
+    <title>Editar Producto</title>
     <style>
-body {
+   body {
     background-image: url("https://static.vecteezy.com/system/resources/previews/003/710/788/non_2x/abstract-web-background-many-hexagons-on-a-dark-gray-background-vector.jpg");
     background-repeat: no-repeat;
     background-size: cover;
@@ -84,7 +44,7 @@ body {
     overflow-x: hidden;
 }
 
-h2 {
+h1, h2 {
     text-align: center;
     margin-top: 30px;
     color: #ffffff;
@@ -97,7 +57,7 @@ form {
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(223, 4, 4, 0.5); /* sombra roja */
+    box-shadow: 0 0 15px rgba(223, 4, 4, 0.5); 
     backdrop-filter: blur(5px);
 }
 
@@ -128,7 +88,7 @@ select {
     padding: 10px;
     margin-top: 5px;
     margin-bottom: 10px;
-    border: 2px solid #f41f1f; /* borde rojo */
+    border: 2px solid #f41f1f; 
     border-radius: 8px;
     background-color: #1A1A1A;
     color: #E0E0E0;
@@ -146,9 +106,10 @@ select:focus {
 }
 
 input[type="submit"],
-input[type="reset"] {
+input[type="reset"],
+button[type="reset"] {
     padding: 10px 20px;
-    background-color: #5b0202; /* rojo */
+    background-color: #5b0202; 
     color: white;
     border: none;
     border-radius: 8px;
@@ -157,52 +118,84 @@ input[type="reset"] {
     font-size: 1rem;
     margin-right: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4); /* sombra roja */
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
 }
 
 input[type="submit"]:hover,
-input[type="reset"]:hover {
+input[type="reset"]:hover,
+button[type="reset"]:hover {
     background-color: #f41f1f;
     box-shadow: 0 5px 20px rgba(240, 25, 25, 0.6);
     transform: translateY(-3px);
 }
 
 input[type="submit"]:active,
-input[type="reset"]:active {
+input[type="reset"]:active,
+button[type="reset"]:active {
     transform: translateY(1px);
     box-shadow: 0 3px 10px rgba(196, 7, 7, 0.4);
+}
+
+.imagen-preview {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.imagen-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(223, 4, 4, 0.5);
 }
 
     </style>
 </head>
 <body>
-    <h2>Modificar Producto</h2>
-    <form method="post" enctype="multipart/form-data">
-        <label>Nombre</label>
-        <input type="text" name="nombre" value="<?php echo $nombre; ?>" required>
+    <h2>Editar Producto</h2>
+    <form action="update_producto.php" method="post">
+        <input type="hidden" name="id" value="<?php echo $producto['id'] ?? ''; ?>">
 
-        <label>Marca</label>
-        <input type="text" name="marca" value="<?php echo $marca; ?>" required>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="<?php echo $producto['nombre'] ?? ''; ?>" required>
 
-        <label>Modelo</label>
-        <input type="text" name="modelo" value="<?php echo $modelo; ?>" required>
+        <label for="marca">Marca:</label>
+<select id="marca" name="marca" required>
+    <option value="">Seleccione una marca</option>
+    <option value="Samsung" <?php if (($producto['marca'] ?? '') == 'Samsung') echo 'selected'; ?>>Samsung</option>
+    <option value="Apple" <?php if (($producto['marca'] ?? '') == 'Apple') echo 'selected'; ?>>Apple</option>
+    <option value="Sony" <?php if (($producto['marca'] ?? '') == 'Sony') echo 'selected'; ?>>Sony</option>
+    <option value="LG" <?php if (($producto['marca'] ?? '') == 'LG') echo 'selected'; ?>>LG</option>
+    <option value="Lenovo" <?php if (($producto['marca'] ?? '') == 'Lenovo') echo 'selected'; ?>>Lenovo</option>
+    <option value="HP" <?php if (($producto['marca'] ?? '') == 'HP') echo 'selected'; ?>>HP</option>
+</select>
 
-        <label>Precio</label>
-        <input type="number" name="precio" step="0.01" value="<?php echo $precio; ?>" required>
+        <label for="modelo">Modelo:</label>
+        <input type="text" id="modelo" name="modelo" value="<?php echo $producto['modelo'] ?? ''; ?>" required>
 
-        <label>Unidades</label>
-        <input type="number" name="unidades" value="<?php echo $unidades; ?>" required>
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" step="0.01" value="<?php echo $producto['precio'] ?? ''; ?>" required>
 
-        <label>Detalles</label>
-        <textarea name="detalles" required><?php echo $detalles; ?></textarea>
+        <label for="detalles">Detalles:</label>
+        <textarea id="detalles" name="detalles" rows="4"><?php echo $producto['detalles'] ?? ''; ?></textarea>
 
-        <label>Imagen Actual</label><br>
-        <img src="<?php echo $imagen; ?>" alt="Imagen del producto" width="100"><br>
-        <label>Nueva Imagen (opcional)</label>
-        <input type="file" name="imagen">
+        <label for="unidades">Unidades:</label>
+        <input type="number" id="unidades" name="unidades" value="<?php echo $producto['unidades'] ?? ''; ?>" required>
 
-        <input type="submit" value="Guardar Cambios">
-        <a href="get_productos_vigentes_v2.php?tope=30" class="btn-secondary">Cancelar</a>
+        <label for="imagen">Imagen (URL):</label>
+        <input type="text" id="imagen" name="imagen" value="<?php echo $producto['imagen'] ?? ''; ?>">
+
+        <?php if (!empty($producto['imagen'])): ?>
+        <div class="imagen-preview">
+            <img src="<?php echo $producto['imagen']; ?>" alt="Imagen del producto">
+        </div>
+        <?php endif; ?>
+
+        <input type="submit" value="Actualizar Producto">
     </form>
+
+    <p style="text-align:center; margin-top:20px;">
+        <a href="get_productos_xhtml_v2.php?tope=1000" style="color:#00BFFF; text-decoration:none; font-weight:bold;">Ver todos los productos</a> |
+        <a href="get_productos_vigentes_v2.php?tope=1000" style="color:#00BFFF; text-decoration:none; font-weight:bold;">Ver productos vigentes</a>
+    </p>
 </body>
 </html>
