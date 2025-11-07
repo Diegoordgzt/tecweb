@@ -34,13 +34,13 @@
                 <fieldset>
                   <div class="form-group">
                     <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="100" placeholder="Máximo 100 caracteres">
+                    <input type="text" id="nombre" name="nombre" class="form-control" maxlength="100" placeholder="Máximo 100 caracteres">
                     <small class="form-text text-muted estado-nombre"></small> <!-- Barra de estado -->
                   </div>
               
                   <div class="form-group">
                     <label for="marca">Marca:</label>
-                    <select id="marca" name="marca" class="form-control" required>
+                    <select id="marca" name="marca" class="form-control">
                       <option value="">Seleccione una marca</option>
         <option value="Sony">Sony</option>
         <option value="Samsung">Samsung</option>
@@ -50,20 +50,19 @@
         <option value="Dell">Dell</option>
         <option value="Lenovo">Lenovo</option>
 
-                      
                     </select>
-                     <small class="form-text text-muted estado-marca"></small>
+                    <small class="form-text text-muted estado-marca"></small> <!-- Barra de estado -->
                   </div>
               
                   <div class="form-group">
                     <label for="modelo">Modelo:</label>
-                    <input type="text" id="modelo" name="modelo" class="form-control" required maxlength="25" placeholder="Texto alfanumérico">
+                    <input type="text" id="modelo" name="modelo" class="form-control" maxlength="25" placeholder="Texto alfanumérico">
                     <small class="form-text text-muted estado-modelo"></small> <!-- Barra de estado -->
                   </div>
               
                   <div class="form-group">
                     <label for="precio">Precio:</label>
-                    <input type="number" id="precio" name="precio" class="form-control" step="0.01" required min="100" placeholder="Mayor a 99.99">
+                    <input type="number" id="precio" name="precio" class="form-control" step="0.01"  min="100" placeholder="Mayor a 99.99">
                     <small class="form-text text-muted estado-precio"></small> <!-- Barra de estado -->
                   </div>
               
@@ -75,7 +74,7 @@
               
                   <div class="form-group">
                     <label for="unidades">Unidades:</label>
-                    <input type="number" id="unidades" name="unidades" class="form-control" required min="0" placeholder="Mayor o igual a 0">
+                    <input type="number" id="unidades" name="unidades" class="form-control"  min="0" placeholder="Mayor o igual a 0">
                     <small class="form-text text-muted estado-unidades"></small> <!-- Barra de estado -->
                   </div>
               
