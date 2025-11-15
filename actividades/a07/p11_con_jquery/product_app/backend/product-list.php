@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/myapi/Products.php';
+use TECWEB\MYAPI\Products as Products;
+require_once __DIR__.'/myapi/Products.php';
 
-use TECWEB\MYAPI\Products;
+header('Content-Type: application/json');
 
-$products = new Products('marketzone');
-$products->list(); 
-echo $products->getData();
-?>
+$prodObj = new Products('marketzone');
+$prodObj->list();
+echo json_encode($prodObj->getData());

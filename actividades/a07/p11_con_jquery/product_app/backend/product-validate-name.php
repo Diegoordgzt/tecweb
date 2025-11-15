@@ -1,5 +1,5 @@
 <?php
-use TECWEB\MYAPI\Products as Products; 
+use TECWEB\MYAPI\Products as Products;
 require_once __DIR__.'/myapi/Products.php';
 
 header('Content-Type: application/json');
@@ -11,12 +11,13 @@ $response = [
     'message' => 'Nombre no proporcionado'
 ];
 
-if (isset($_GET['nombre'])) {
-    $nombre = $_GET['nombre'];
-    $prodObj->singleByName($nombre);
-    $data = json_decode($prodObj->getData(), true);
-    
-    if (empty($data)) {
+if(isset($_GET['nombre'])){
+
+    $prodObj->singleByName($_GET['nombre']);
+
+    $data = $prodObj->getData(); // <-- ahora recibe array, NO json_decode
+
+    if(empty($data)){
         $response = [
             'status' => 'success',
             'message' => 'Nombre disponible'
@@ -27,4 +28,5 @@ if (isset($_GET['nombre'])) {
 }
 
 echo json_encode($response);
+
 ?>
