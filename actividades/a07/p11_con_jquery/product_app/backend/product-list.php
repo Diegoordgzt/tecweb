@@ -6,4 +6,11 @@ header('Content-Type: application/json');
 
 $prodObj = new Products('marketzone');
 $prodObj->list();
-echo json_encode($prodObj->getData());
+
+$data = $prodObj->getData();
+
+// FORMATO CORRECTO QUE ESPERA app.js:
+echo json_encode([
+    "status" => "success",
+    "data" => $data
+]);

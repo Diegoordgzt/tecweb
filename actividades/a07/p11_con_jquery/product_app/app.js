@@ -329,55 +329,58 @@ $(document).ready(function () {
         const url = edit ? './backend/product-edit.php' : './backend/product-add.php';
     
         // Mostrar loader mientras se procesa
-        Swal.fire({
-            title: edit ? 'Actualizando producto...' : 'Agregando producto...',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-                
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: formData,
-                    dataType: 'json',
-                    success: function(response) {
-                        Swal.close();
-                        if (response.status === "success") {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Éxito!',
-                                text: response.message,
-                                timer: 2000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                // Resetear y actualizar
-                                edit = false;
-                                $('#product-form')[0].reset();
-                                $('#productId').val('');
-                                $('button.btn-primary').text("Agregar Producto");
-                                listarProductos(); // Actualizar la lista
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message || 'Operación fallida'
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error de conexión',
-                            text: 'No se pudo comunicar con el servidor'
-                        });
-                        console.error("Error:", xhr.responseText);
-                    }
-                });
-            }
-        });
-    });
+Swal.fire({
+    title: edit ? 'Actualizando producto...' : 'Agregando producto...',
+    allowOutsideClick: false,
+    didOpen: () => {
+        Swal.showLoading();
+    }
+});
 
+$.ajax({
+    url: url,
+    type: 'POST',
+    data: formData,
+    dataType: 'json',
+    success: function(response) {
+        Swal.close(); // 🔥 CERRAMOS EL LOADER
+
+        if (response.status === "success") {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: response.message,
+                confirmButtonText: 'OK',
+                showConfirmButton: true,
+                timer: false
+            }).then(() => {
+                edit = false;
+                $('#product-form')[0].reset();
+                $('#productId').val('');
+                $('button.btn-primary').text("Agregar Producto");
+                listarProductos();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message || 'Operación fallida',
+                confirmButtonText: 'Entendido'
+            });
+        }
+    },
+    error: function(xhr) {
+        Swal.close(); // ⚠️ También cerrar loader aquí
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo comunicar con el servidor',
+            confirmButtonText: 'Entendido'
+        });
+    }
+});
+});
+    
     $('#search-form').submit(function (e) {
     e.preventDefault();
     console.log("Búsqueda iniciada"); // Verifica que el evento se esté ejecutando

@@ -5,7 +5,7 @@ use TECWEB\MYAPI\DataBase as Database;
 require_once __DIR__ . '/DataBase.php';
 
 class Products extends Database {
-    private $data = NULL;
+    public $data = NULL;
 
     public function __construct($db, $user='root', $pass='diegord17'){
         $this->data = array();
